@@ -31,7 +31,7 @@ function FinalWelcome() {
 
   const handleGetStarted = () => {
     // In a real app, this would navigate to the main dashboard
-    navigate('/mood-selection');
+    navigate('/home');
   };
 
   return (
@@ -59,7 +59,7 @@ function FinalWelcome() {
       {/* Main Content */}
       <div className="text-center max-w-2xl z-10">
         {/* Large Welcome Text in Red */}
-        <h1 className="text-7xl md:text-9xl font-bold mb-8 animate-fade-in"
+        <h1 className="text-4xl mt-36 font-bold mb-8 animate-fade-in"
             style={{ color: '#E88B8B' }}>
           Welcome
         </h1>

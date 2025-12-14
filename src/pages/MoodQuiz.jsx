@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Loader2, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
 
 function MoodQuiz() {
   const { mood } = useParams();
@@ -7,11 +8,19 @@ function MoodQuiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const quizData = {
     happy: {
       emoji: '😊',
       title: 'Celebrating Your Happiness',
+      gradient: 'from-yellow-400 to-amber-500',
       questions: [
         {
           question: 'What made you happy today?',
@@ -39,6 +48,7 @@ function MoodQuiz() {
     sad: {
       emoji: '😢',
       title: 'Understanding Your Sadness',
+      gradient: 'from-blue-400 to-indigo-500',
       questions: [
         {
           question: 'How long have you been feeling this way?',
@@ -66,6 +76,7 @@ function MoodQuiz() {
     anxious: {
       emoji: '😰',
       title: 'Managing Your Anxiety',
+      gradient: 'from-purple-400 to-violet-500',
       questions: [
         {
           question: 'When did you start feeling anxious?',
@@ -93,6 +104,7 @@ function MoodQuiz() {
     angry: {
       emoji: '😠',
       title: 'Working Through Anger',
+      gradient: 'from-red-400 to-rose-500',
       questions: [
         {
           question: 'What triggered your anger?',
@@ -120,6 +132,7 @@ function MoodQuiz() {
     tired: {
       emoji: '😴',
       title: 'Understanding Your Fatigue',
+      gradient: 'from-slate-400 to-gray-500',
       questions: [
         {
           question: 'What kind of tired are you feeling?',
@@ -147,6 +160,7 @@ function MoodQuiz() {
     stressed: {
       emoji: '😫',
       title: 'Relieving Your Stress',
+      gradient: 'from-orange-400 to-red-500',
       questions: [
         {
           question: 'What\'s your main source of stress?',
@@ -174,6 +188,7 @@ function MoodQuiz() {
     lonely: {
       emoji: '😔',
       title: 'Addressing Your Loneliness',
+      gradient: 'from-indigo-400 to-purple-500',
       questions: [
         {
           question: 'When do you feel most lonely?',
@@ -201,6 +216,7 @@ function MoodQuiz() {
     calm: {
       emoji: '😌',
       title: 'Nurturing Your Calm',
+      gradient: 'from-emerald-400 to-teal-500',
       questions: [
         {
           question: 'What brought you to this calm state?',
@@ -231,14 +247,28 @@ function MoodQuiz() {
   const questions = currentQuiz.questions;
 
   const handleAnswer = (answer) => {
-    const newAnswers = [...answers, answer];
-    setAnswers(newAnswers);
+    setSelectedAnswer(answer);
+    setIsProcessing(true);
 
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      setShowResult(true);
-    }
+    setTimeout(() => {
+      const newAnswers = [...answers, answer];
+      setAnswers(newAnswers);
+
+      if (currentQuestion < questions.length - 1) {
+        setTimeout(() => {
+          setCurrentQuestion(currentQuestion + 1);
+          setIsProcessing(false);
+          setSelectedAnswer(null);
+          setIsVisible(false);
+          setTimeout(() => setIsVisible(true), 50);
+        }, 600);
+      } else {
+        setTimeout(() => {
+          setShowResult(true);
+          setIsProcessing(false);
+        }, 600);
+      }
+    }, 1000);
   };
 
   const handleContinue = () => {
@@ -247,56 +277,136 @@ function MoodQuiz() {
 
   if (showResult) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-light-mint to-white flex items-center justify-center p-6">
-        <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 relative overflow-hidden flex items-center justify-center p-6">
+        {/* Animated background shapes */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-emerald-200/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-200/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-200/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+        </div>
+
+        <div className="relative max-w-3xl w-full bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 animate-fade-in">
           <div className="text-center">
-            <div className="text-7xl mb-6">{currentQuiz.emoji}</div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-6">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl mb-6 shadow-lg shadow-emerald-200/50 animate-bounce-gentle">
+              <CheckCircle2 className="w-12 h-12 text-white" strokeWidth={2.5} />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
               Thank you for sharing
             </h2>
-            <div className="bg-light-mint p-6 rounded-2xl mb-8">
-              <p className="text-lg text-gray-700 leading-relaxed">
-                {currentQuiz.advice}
-              </p>
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100/50 p-6 md:p-8 rounded-2xl mb-8">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+                <p className="text-lg md:text-xl text-gray-700 leading-relaxed text-left">
+                  {currentQuiz.advice}
+                </p>
+              </div>
             </div>
             <button
               onClick={handleContinue}
-              className="btn-primary"
+              className="group relative px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-full text-lg shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 overflow-hidden"
             >
-              Continue Your Journey
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Continue Your Journey
+                <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
           </div>
         </div>
+
+        <style jsx>{`
+          @keyframes blob {
+            0%, 100% {
+              transform: translate(0, 0) scale(1);
+            }
+            33% {
+              transform: translate(30px, -50px) scale(1.1);
+            }
+            66% {
+              transform: translate(-20px, 20px) scale(0.9);
+            }
+          }
+
+          @keyframes fade-in {
+            from {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+
+          @keyframes bounce-gentle {
+            0%, 100% {
+              transform: translateY(0);
+            }
+            50% {
+              transform: translateY(-10px);
+            }
+          }
+
+          .animate-blob {
+            animation: blob 7s infinite;
+          }
+
+          .animate-fade-in {
+            animation: fade-in 0.6s ease-out;
+          }
+
+          .animate-bounce-gentle {
+            animation: bounce-gentle 2s ease-in-out infinite;
+          }
+
+          .animation-delay-2000 {
+            animation-delay: 2s;
+          }
+
+          .animation-delay-4000 {
+            animation-delay: 4s;
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-light-mint to-white p-6">
-      <div className="max-w-3xl mx-auto py-12">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 relative overflow-hidden p-6">
+      {/* Animated background shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-emerald-200/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-200/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+      </div>
+
+      <div className="relative max-w-3xl mx-auto py-12">
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-gray-600">
+        <div className={`mb-8 bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm font-semibold text-gray-600">
               Question {currentQuestion + 1} of {questions.length}
             </span>
-            <span className="text-sm text-calm-green font-semibold">
+            <span className="text-sm font-bold text-emerald-600">
               {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
             <div
-              className="bg-calm-green h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 h-3 rounded-full transition-all duration-700 ease-out shadow-sm"
               style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
             ></div>
           </div>
         </div>
 
         {/* Question Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 mb-6">
+        <div className={`bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="text-center mb-8">
-            <div className="text-6xl mb-4">{currentQuiz.emoji}</div>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+            <div className="text-6xl md:text-7xl mb-6">{currentQuiz.emoji}</div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 leading-tight">
               {questions[currentQuestion].question}
             </h2>
           </div>
@@ -306,19 +416,85 @@ function MoodQuiz() {
             {questions[currentQuestion].options.map((option, index) => (
               <button
                 key={index}
-                onClick={() => handleAnswer(option)}
-                className="w-full p-4 bg-gray-50 hover:bg-mint border-2 border-transparent hover:border-calm-green rounded-2xl text-left transition-all duration-300 transform hover:scale-102"
+                onClick={() => !isProcessing && handleAnswer(option)}
+                disabled={isProcessing}
+                className={`w-full p-5 rounded-2xl text-left transition-all duration-300 transform border-2 ${
+                  selectedAnswer === option
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 border-transparent text-white scale-105 shadow-xl'
+                    : isProcessing
+                    ? 'bg-gray-50 border-gray-200 cursor-not-allowed opacity-50'
+                    : 'bg-white border-gray-200 hover:border-emerald-400 hover:bg-emerald-50 hover:scale-102 shadow-md hover:shadow-lg'
+                }`}
               >
-                <span className="text-lg text-gray-700">{option}</span>
+                <div className="flex items-center justify-between">
+                  <span className={`text-base md:text-lg font-medium ${
+                    selectedAnswer === option ? 'text-white' : 'text-gray-700'
+                  }`}>
+                    {option}
+                  </span>
+                  {selectedAnswer === option && isProcessing && (
+                    <Loader2 className="w-5 h-5 text-white animate-spin flex-shrink-0" />
+                  )}
+                  {selectedAnswer === option && !isProcessing && (
+                    <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+                  )}
+                </div>
               </button>
             ))}
           </div>
+
+          {/* Processing indicator */}
+          {isProcessing && (
+            <div className="mt-6 text-center animate-fade-in">
+              <div className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-50 border border-emerald-200 rounded-full">
+                <Loader2 className="w-4 h-4 text-emerald-600 animate-spin" />
+                <span className="text-sm text-emerald-700 font-medium">Processing your answer...</span>
+              </div>
+            </div>
+          )}
         </div>
 
-        <p className="text-center text-gray-500 text-sm italic">
-          Take your time. There are no wrong answers.
-        </p>
+        <div className="text-center">
+          <p className="text-gray-500 text-sm italic bg-white/40 backdrop-blur-sm rounded-full px-6 py-3 inline-block">
+            Take your time. There are no wrong answers.
+          </p>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes blob {
+          0%, 100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+        }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+      `}</style>
     </div>
   );
 }
