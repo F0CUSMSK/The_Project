@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PageLoader from './components/PageLoader';
 import MainLayout from './layouts/MainLayouts';
@@ -17,24 +17,39 @@ const AuthPage = lazy(() => import('./pages/AuthPage'));
 const FinalWelcome = lazy(() => import('./pages/FinalWelcome'));
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Afficher le loader pendant 3 secondes
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <PageLoader duration={3000} />;
+  }
+
   return (
     <Router>
-      <Suspense fallback={<PageLoader />}>
-       <MainLayout>
-        <Routes>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/account" element={<AccountPreferences />} />
-          <Route path="/groups" element={<Groupes />} />
-          <Route path="/mood-selection" element={<MoodSelection />} />
-          <Route path="/quiz/:mood" element={<MoodQuiz />} />
-          <Route path="/hobbies" element={<HobbiesSelection />} />
-          <Route path="/write" element={<FreeWriting />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/final-welcome" element={<FinalWelcome />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+      <Suspense fallback={<PageLoader duration={3000} />}>
+        <MainLayout>
+          <Routes>
+            <Route path="/" element={<WelcomePage />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/account" element={<AccountPreferences />} />
+            <Route path="/groups" element={<Groupes />} />
+            <Route path="/mood-selection" element={<MoodSelection />} />
+            <Route path="/quiz/:mood" element={<MoodQuiz />} />
+            <Route path="/hobbies" element={<HobbiesSelection />} />
+            <Route path="/write" element={<FreeWriting />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/final-welcome" element={<FinalWelcome />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </MainLayout>
       </Suspense>
     </Router>
@@ -42,4 +57,3 @@ function App() {
 }
 
 export default App;
-
