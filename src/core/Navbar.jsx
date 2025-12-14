@@ -124,16 +124,7 @@ function Navbar() {
 
   const renderUnauthenticatedMenu = () => (
     <>
-      <Link
-        to="/"
-        className={`group flex items-center gap-2 px-4 lg:px-5 py-2.5 font-semibold rounded-full transition-all duration-300 hover:scale-105 ${
-          location.pathname === '/'
-            ? 'bg-emerald-500 text-white shadow-lg'
-            : 'text-gray-700 hover:bg-emerald-50'
-        }`}
-      >
-        <span>Home</span>
-      </Link>
+      
       
       <Link
         to="/auth"
