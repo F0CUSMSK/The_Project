@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-mint: #B8E6D5;
+  --color-light-mint: #E8F5F1;
+  --color-soft-green: #9DD9C0;
+  --color-calm-green: #7BC9A6;
+  --color-soft-red: #E88B8B;
+  
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-calm-green hover:bg-soft-green text-white font-medium py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-calm-green font-medium py-3 px-8 rounded-full transition-all duration-300 border-2 border-calm-green;
+  }
+
+  .mood-card {
+    @apply bg-white p-6 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer;
+  }
+
+  .mood-card-selected {
+    @apply bg-mint ring-4 ring-calm-green;
+  }
+
+  .hobby-card {
+    @apply bg-white p-5 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border-2 border-transparent;
+  }
+
+  .hobby-card-selected {
+    @apply border-calm-green bg-light-mint;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-calm-green focus:outline-none transition-colors;
+  }
+
+  .container-center {
+    @apply min-h-screen flex flex-col items-center justify-center p-6;
+  }
+}
